@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,9 @@ Route::get('/products', [ProductController::class, 'index']);
 
 // Admin routes
 Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
+    //Kullanıcı
+    Route::get('/profile', [UserController::class, 'profile']);
+    Route::put('/profile/{profile}', [UserController::class, 'update']);
     //Kategori
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{category}', [CategoryController::class, 'update']);

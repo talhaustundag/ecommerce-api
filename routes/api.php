@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
@@ -18,15 +19,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('login',[LoginController::class,'login']);
 Route::post('register',[LoginController::class,'register']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/products', [ProductController::class, 'index']);
+
+// User routes
+Route::middleware(['auth:sanctum'])->group(function () {
+    //Sepet
+    Route::get('/cart', [CartController::class, 'getCart']);
+    Route::post('/cart/add', [CartController::class, 'addToCart']);
+    Route::post('/cart/remove', [CartController::class, 'removeItem']);
+    Route::post('/cart/clear', [CartController::class, 'clearCart']);
+});
 
 // Admin routes
 Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
@@ -42,4 +48,5 @@ Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
     Route::put('/products/{product}', [ProductController::class, 'update']);
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 });
+
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -32,6 +33,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/cart/add', [CartController::class, 'addToCart']);
     Route::post('/cart/remove', [CartController::class, 'removeItem']);
     Route::post('/cart/clear', [CartController::class, 'clearCart']);
+    // Order
+    Route::post('/orders/create', [OrderController::class, 'createOrder']);
+    Route::get('/orders', [OrderController::class, 'listOrders']);
 });
 
 // Admin routes

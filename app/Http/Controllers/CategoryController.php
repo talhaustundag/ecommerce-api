@@ -15,7 +15,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Kategoriler listelendi.',
+            'message' => count($categories).' Tane Kategori listelendi.',
             'data' => $categories
         ], 200);
     }

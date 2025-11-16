@@ -29,7 +29,8 @@ class UserController extends Controller
         $user->update([
             'name' => $request->name
         ]);
-
+        $user->refresh();
+        
         return response()->json([
             'success' => true,
             'message' => 'Profil güncellendi.',

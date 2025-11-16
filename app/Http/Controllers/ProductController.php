@@ -40,14 +40,21 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Ürünler listelendi.',
+            'message' => count($products).' Tane Ürün listelendi.',
             'data' => $products
         ], 200);
     }
 
     public function store(ProductRequest $request)
     {
-        $product = Product::create($request->validated());
+        $product = Product::create([
+            'category_id' => $request->category_id,
+            'name'        => $request->name,
+            'description' => $request->description,
+            'price'       => $request->price,
+            'stock'       => $request->stock,
+            'brand'       => $request->brand
+        ]);
 
         return response()->json([
             'success' => true,
@@ -58,7 +65,14 @@ class ProductController extends Controller
 
     public function update(ProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        $product->update([
+            'category_id' => $request->category_id,
+            'name'        => $request->name,
+            'description' => $request->description,
+            'price'       => $request->price,
+            'stock'       => $request->stock,
+            'brand'       => $request->brand
+        ]);
 
         return response()->json([
             'success' => true,

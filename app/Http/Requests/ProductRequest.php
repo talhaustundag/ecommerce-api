@@ -23,12 +23,13 @@ class ProductRequest extends FormRequest
     {
         return [
             'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|min:2',
+            'name' => 'required|string|min:3',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
+            'price' => 'required|numeric|min:0.01',
             'stock' => 'required|integer|min:0',
             'brand' => 'nullable|string'
         ];
+
     }
 
 }

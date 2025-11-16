@@ -7,6 +7,9 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmationMail;
+
 
 
 class OrderController extends Controller
@@ -68,6 +71,7 @@ class OrderController extends Controller
             $cart->items()->delete();
 
             DB::commit();
+            Mail::to($order->user->email)->send(new OrderConfirmationMail($order));
 
             return response()->json([
                 'success' => true,

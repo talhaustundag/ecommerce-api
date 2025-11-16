@@ -14,7 +14,7 @@ class ProductController extends Controller
 
         // İsim Araması
         if ($request->has('search')) {
-            $query->where('name', 'like', "%{$request->search}%");
+            $query->where('name', 'ilike', "%{$request->search}%");
         }
 
         // Minimum ve Maksimum Fiyat Filtresi
@@ -33,7 +33,7 @@ class ProductController extends Controller
 
         // Marka Filtresi
         if ($request->has('brand')) {
-            $query->where('brand', 'like', "%{$request->brand}%");
+            $query->where('brand', 'ilike', "%{$request->brand}%");
         }
 
         $products = $query->paginate(10);

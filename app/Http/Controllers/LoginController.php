@@ -24,8 +24,9 @@ class LoginController extends Controller
 
         $response = [
             'user' => $user,
+            'message' => ['Giriş Başarılı.'],
             'token' => $token,
-            'message' => ['Giriş Başarılı.']
+            'errors' => []
         ];
 
         return response($response, 201);
@@ -54,7 +55,9 @@ class LoginController extends Controller
         if ($result) {
             return response([
                 'user' => $user,
-                'token' => $token
+                'message' => ['Kullanıcı Kaydı Başarılı.'],
+                'token' => $token,
+                'errors' => []
             ], 201);
         } else {
             return response([

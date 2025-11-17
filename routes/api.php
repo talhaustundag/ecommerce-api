@@ -45,9 +45,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 // Admin routes
 Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
     //Admin Dashboard
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+    Route::get('/dashboard', [AdminController::class, 'dashboard']);
     //Orders
-    Route::put('/admin/orders/{order}/status', [OrderController::class, 'updateStatus']);
+    Route::put('/orders/{order}/status', [OrderController::class, 'updateStatus']);
     //Kategori
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{category}', [CategoryController::class, 'update']);

@@ -16,7 +16,8 @@ class CategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => count($categories).' Tane Kategori listelendi.',
-            'data' => $categories
+            'data' => $categories,
+            'errors' => []
         ], 200);
     }
 
@@ -31,7 +32,8 @@ class CategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Kategori oluşturuldu.',
-            'data' => $category
+            'data' => $category,
+            'errors' => []
         ], 201);
     }
 
@@ -45,7 +47,8 @@ class CategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Kategori güncellendi.',
-            'data' => $category
+            'data' => $category,
+            'errors' => []
         ], 200);
     }
 
@@ -57,7 +60,8 @@ class CategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Kategori silindi.',
-            'data' => []
+            'data' => [],
+            'errors' => []
         ], 200);
     }
 }

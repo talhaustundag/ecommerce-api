@@ -18,7 +18,8 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Kullanıcı Profili',
-            'data' => $user
+            'data' => $user,
+            'errors' => []
         ], 200);
     }
 
@@ -30,11 +31,12 @@ class UserController extends Controller
             'name' => $request->name
         ]);
         $user->refresh();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Profil güncellendi.',
-            'data' => $user
+            'data' => $user,
+            'errors' => []
         ], 200);
     }
 }

@@ -53,7 +53,8 @@ class CartController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Ürün sepete eklendi.',
-            'data' => $cartItem
+            'data' => $cartItem,
+            'errors' => []
         ], 201);
     }
 
@@ -66,7 +67,12 @@ class CartController extends Controller
         $cart = Cart::where('user_id', auth()->id())->first();
 
         if (!$cart) {
-            return response()->json(['message' => 'Sepet bulunamadı'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Sepet bulunamadı.',
+                'data' => null,
+                'errors' => []
+            ], 404);
         }
 
         $cartItem = CartItem::where('cart_id', $cart->id)
@@ -74,7 +80,12 @@ class CartController extends Controller
             ->first();
 
         if (!$cartItem) {
-            return response()->json(['message' => 'Ürün sepette yok'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'Ürün sepette yok.',
+                'data' => null,
+                'errors' => []
+            ], 404);
         }
 
         if ($cartItem->quantity > 1) {
@@ -86,7 +97,12 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Ürün sepetten çıkarıldı.'
+            'message' => 'Ürün sepetten çıkarıldı.',
+            'data' => [
+                'product_id' => $request->product_id,
+                'remaining_quantity' => $cartItem->quantity ?? 0
+            ],
+            'errors' => []
         ], 200);
     }
 
@@ -100,7 +116,9 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Sepet boşaltıldı.'
+            'message' => 'Sepet boşaltıldı.',
+            'data' => [],
+            'errors' => []
         ], 200);
     }
 

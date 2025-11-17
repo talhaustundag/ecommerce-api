@@ -22,7 +22,10 @@ class OrderController extends Controller
 
         if (!$cart || $cart->items->count() == 0) {
             return response()->json([
-                'message' => 'Sepet boş.'
+                'success' => false,
+                'message' => 'Sepet boş.',
+                'data' => null,
+                'errors' => []
             ], 400);
         }
 
@@ -38,7 +41,9 @@ class OrderController extends Controller
 
                     return response()->json([
                         'success' => false,
-                        'message' => $item->product->name . ' için yeterli stok yok.'
+                        'message' => $item->product->name . ' için yeterli stok yok.',
+                        'data' => null,
+                        'errors' => []
                     ], 400);
                 }
 
@@ -76,7 +81,8 @@ class OrderController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Sipariş başarıyla oluşturuldu.',
-                'order' => $order->load('items.product')
+                'data' => $order->load('items.product'),
+                'errors' => []
             ], 201);
 
         } catch (\Exception $e) {
@@ -85,7 +91,8 @@ class OrderController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Sipariş oluşturulurken bir hata oluştu.',
-                'error' => $e->getMessage()
+                'data' => null,
+                'errors' => [$e->getMessage()]
             ], 500);
         }
     }
@@ -100,7 +107,8 @@ class OrderController extends Controller
 
         return response()->json([
             'success' => true,
-            'orders' => $orders
+            'orders' => $orders,
+            'errors' => []
         ], 200);
     }
     //SİPARİŞ GÜNCELLEME
@@ -117,7 +125,8 @@ class OrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Sipariş durumu güncellendi.',
-            'order' => $order
+            'order' => $order,
+            'errors' => []
         ], 200);
     }
 

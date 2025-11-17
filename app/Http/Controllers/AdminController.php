@@ -27,13 +27,15 @@ class AdminController extends Controller
 
         return response()->json([
             'success' => true,
+            'message' => 'Dashboard verileri getirildi.',
             'data' => [
-                'total_users' => $totalUsers,
-                'total_orders' => $totalOrders,
-                'total_revenue' => $totalRevenue,
-                'orders_today' => $ordersToday,
-                'best_sellers' => $bestSellers,
-            ]
+                'toplam_kullanici' => $totalUsers,
+                'toplam_siparis' => $totalOrders,
+                'toplam_gelir' => $totalRevenue,
+                'bugunku_siparis_sayisi' => $ordersToday,
+                'en_cok_satan_urunler' => $bestSellers
+            ],
+            'errors' => []
         ], 200);
     }
 }

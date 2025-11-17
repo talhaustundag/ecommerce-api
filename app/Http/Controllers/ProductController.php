@@ -56,6 +56,7 @@ class ProductController extends Controller
             'success' => true,
             'message' => count($products).' Tane Ürün listelendi.',
             'data' => $products,
+            'errors' => [],
             'page' => $products->currentPage()
         ], 200);
     }
@@ -74,7 +75,8 @@ class ProductController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Ürün oluşturuldu.',
-            'data' => $product
+            'data' => $product,
+            'errors' => []
         ], 201);
     }
 
@@ -92,7 +94,8 @@ class ProductController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Ürün güncellendi.',
-            'data' => $product
+            'data' => $product,
+            'errors' => []
         ], 200);
     }
 
@@ -102,7 +105,9 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Ürün silindi.'
+            'message' => 'Ürün silindi.',
+            'data' => [],
+            'errors' => []
         ], 200);
     }
 

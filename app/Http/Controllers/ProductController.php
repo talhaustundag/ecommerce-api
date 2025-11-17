@@ -5,9 +5,65 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Tag(
+ *     name="Product",
+ *     description="Ürün yönetimi işlemleri"
+ * )
+ */
 
 class ProductController extends Controller
 {
+
+    /**
+     * @OA\Get(
+     *     path="/api/products",
+     *     summary="Tüm ürünleri listele",
+     *     tags={"Product"},
+     *
+     *     @OA\Parameter(name="search", in="query", description="Ürün adı arama", @OA\Schema(type="string")),
+     *     @OA\Parameter(name="min_price", in="query", description="Minimum fiyat", @OA\Schema(type="number")),
+     *     @OA\Parameter(name="max_price", in="query", description="Maksimum fiyat", @OA\Schema(type="number")),
+     *     @OA\Parameter(name="category_id", in="query", description="Kategori ID filtresi", @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="brand", in="query", description="Marka filtresi", @OA\Schema(type="string")),
+     *     @OA\Parameter(name="sort_by", in="query", description="Sıralama", @OA\Schema(type="string")),
+     *     @OA\Parameter(name="page", in="query", description="Sayfa numarası", @OA\Schema(type="integer")),
+     *
+     *     @OA\Response(
+     *          response=200,
+     *          description="Ürün listesi başarıyla getirildi",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="success", type="boolean", example=true),
+     *              @OA\Property(property="message", type="string", example="20 Tane Ürün listelendi."),
+     *              @OA\Property(
+     *                  property="data",
+     *                  type="object",
+     *                  description="Sayfalama ile ürün listesi",
+     *                  @OA\Property(property="current_page", type="integer", example=1),
+     *                  @OA\Property(
+     *                      property="data",
+     *                      type="array",
+     *                      @OA\Items(
+     *                          type="object",
+     *                          @OA\Property(property="id", type="integer", example=1),
+     *                          @OA\Property(property="name", type="string", example="iPhone 15"),
+     *                          @OA\Property(property="description", type="string", example="Amiral gemisi telefon"),
+     *                          @OA\Property(property="price", type="number", example=49999),
+     *                          @OA\Property(property="stock", type="integer", example=10),
+     *                          @OA\Property(property="brand", type="string", example="Apple"),
+     *                          @OA\Property(property="category_id", type="integer", example=2)
+     *                      )
+     *                  ),
+     *                  @OA\Property(property="total", type="integer", example=150),
+     *                  @OA\Property(property="last_page", type="integer", example=8)
+     *              ),
+     *              @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *          )
+     *     )
+     * )
+     */
     public function index(Request $request)
     {
         $query = Product::with('category');
@@ -60,6 +116,44 @@ class ProductController extends Controller
             'page' => $products->currentPage()
         ], 200);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/products/{id}",
+     *     summary="Ürün detayı getir",
+     *     tags={"Product"},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Ürün ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Ürün detayı başarıyla getirildi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Ürün detayları getirildi."),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Ürün bulunamadı",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Ürün bulunamadı."),
+     *             @OA\Property(property="data", type="string", example=null),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function product_detail($id)
     {
         $product = Product::with('category')->find($id);
@@ -81,7 +175,43 @@ class ProductController extends Controller
         ], 200);
     }
 
-
+    /**
+     * @OA\Post(
+     *     path="/api/admin/products",
+     *     summary="Yeni ürün oluştur (Admin)",
+     *     tags={"Product"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","price","stock","category_id"},
+     *             @OA\Property(property="name", type="string", example="Samsung S23"),
+     *             @OA\Property(property="description", type="string", example="Android telefon"),
+     *             @OA\Property(property="price", type="number", example=29999),
+     *             @OA\Property(property="stock", type="integer", example=25),
+     *             @OA\Property(property="brand", type="string", example="Samsung"),
+     *             @OA\Property(property="category_id", type="integer", example=1)
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=201,
+     *         description="Ürün başarıyla oluşturuldu",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Ürün oluşturuldu."),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validasyon hatası"
+     *     )
+     * )
+     */
     public function store(ProductRequest $request)
     {
         $product = Product::create([
@@ -101,6 +231,45 @@ class ProductController extends Controller
         ], 201);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/admin/products/{id}",
+     *     summary="Ürün güncelle (Admin)",
+     *     tags={"Product"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Ürün ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="price", type="number"),
+     *             @OA\Property(property="stock", type="integer"),
+     *             @OA\Property(property="brand", type="string"),
+     *             @OA\Property(property="category_id", type="integer")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Ürün güncellendi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Ürün güncellendi."),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function update(ProductRequest $request, Product $product)
     {
         $product->update([
@@ -120,6 +289,37 @@ class ProductController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/admin/products/{id}",
+     *     summary="Ürün sil (Admin)",
+     *     tags={"Product"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Ürün başarıyla silindi",
+     *         @OA\JsonContent(
+     *              @OA\Property(property="success", type="boolean", example=true),
+     *              @OA\Property(property="message", type="string", example="Ürün silindi."),
+     *              @OA\Property(property="data", type="array", @OA\Items()),
+     *              @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Ürün bulunamadı"
+     *     )
+     * )
+     */
     public function destroy(Product $product)
     {
         $product->delete();

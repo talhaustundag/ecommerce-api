@@ -6,9 +6,36 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Tag(
+ *     name="Cart",
+ *     description="Sepet yönetimi işlemleri"
+ * )
+ */
 
 class CartController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/cart",
+     *     summary="Kullanıcının sepetini getirir",
+     *     tags={"Cart"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sepet başarıyla getirildi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", nullable=true, example=null),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function getCart()
     {
         $cart = Cart::where('user_id', auth()->id())
@@ -21,6 +48,34 @@ class CartController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/cart/add",
+     *     summary="Sepete ürün ekler",
+     *     tags={"Cart"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"product_id"},
+     *             @OA\Property(property="product_id", type="integer", example=1),
+     *             @OA\Property(property="quantity", type="integer", example=2)
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=201,
+     *         description="Ürün sepete eklendi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Ürün sepete eklendi."),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function addToCart(Request $request)
     {
         $request->validate([
@@ -59,6 +114,43 @@ class CartController extends Controller
         ], 201);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/cart/remove/{product_id}",
+     *     summary="Sepetten ürün çıkarır (1 adet azaltır)",
+     *     tags={"Cart"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="product_id",
+     *         in="path",
+     *         required=true,
+     *         description="Ürün ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Ürün sepetten çıkarıldı",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Ürün sepetten çıkarıldı."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="product_id", type="integer", example=1),
+     *                 @OA\Property(property="remaining_quantity", type="integer", example=0)
+     *             ),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Sepet veya ürün bulunamadı"
+     *     )
+     * )
+     */
     public function removeItem($product_id)
     {
         // Parametre doğrulama
@@ -113,8 +205,25 @@ class CartController extends Controller
         ], 200);
     }
 
-
-
+    /**
+     * @OA\Delete(
+     *     path="/api/cart/clear",
+     *     summary="Sepeti tamamen temizler",
+     *     tags={"Cart"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sepet temizlendi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Sepet boşaltıldı."),
+     *             @OA\Property(property="data", type="array", @OA\Items(type="string")),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function clearCart()
     {
         $cart = Cart::where('user_id', auth()->id())->first();
@@ -131,6 +240,34 @@ class CartController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/cart/update",
+     *     summary="Sepetteki ürün miktarını günceller",
+     *     tags={"Cart"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"product_id","quantity"},
+     *             @OA\Property(property="product_id", type="integer", example=1),
+     *             @OA\Property(property="quantity", type="integer", example=3)
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Miktar güncellendi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Ürün miktarı güncellendi."),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function update(Request $request)
     {
         $request->validate([

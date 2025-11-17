@@ -9,11 +9,47 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderConfirmationMail;
+use OpenApi\Annotations as OA;
 
-
+/**
+ * @OA\Tag(
+ *     name="Order",
+ *     description="Sipariş yönetimi işlemleri"
+ * )
+ */
 
 class OrderController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/orders",
+     *     summary="Yeni sipariş oluştur",
+     *     tags={"Order"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Response(
+     *         response=201,
+     *         description="Sipariş başarıyla oluşturuldu",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Sipariş başarıyla oluşturuldu."),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=400,
+     *         description="Sepet boş veya stok yetersiz",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Sepet boş."),
+     *             @OA\Property(property="data", type="string", nullable=true, example=null),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     public function createOrder()
     {
         $cart = Cart::where('user_id', auth()->id())
@@ -97,6 +133,24 @@ class OrderController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/orders",
+     *     summary="Kullanıcının tüm siparişlerini listele",
+     *     tags={"Order"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sipariş listesi getirildi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="orders", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
     //SİPARİŞ LİSTELEME
     public function listOrders()
     {
@@ -111,6 +165,46 @@ class OrderController extends Controller
             'errors' => []
         ], 200);
     }
+
+    /**
+     * @OA\Put(
+     *     path="/api/admin/orders/{id}/status",
+     *     summary="Sipariş durumunu güncelle (Admin)",
+     *     tags={"Order"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Order ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="hazırlanıyor")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sipariş durumu güncellendi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Sipariş durumu güncellendi."),
+     *             @OA\Property(property="order", type="object"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=422,
+     *         description="Geçersiz sipariş durumu"
+     *     )
+     * )
+     */
     //SİPARİŞ GÜNCELLEME
     public function updateStatus(Request $request, Order $order)
     {
@@ -135,6 +229,38 @@ class OrderController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/orders/{id}",
+     *     summary="Sipariş detayını getir",
+     *     tags={"Order"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Order ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Sipariş detayı getirildi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Sipariş detayı getirildi."),
+     *             @OA\Property(property="data", type="object"),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=404,
+     *         description="Sipariş bulunamadı"
+     *     )
+     * )
+     */
     public function detailOrders($order_id)
     {
         $order = Order::where('id', $order_id)

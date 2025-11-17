@@ -23,8 +23,9 @@ class LoginController extends Controller
         $token = $user->createToken('my-app-token')->plainTextToken;
 
         $response = [
-            'user' => $user,
+            'success' => true,
             'message' => ['Giriş Başarılı.'],
+            'user' => $user,
             'token' => $token,
             'errors' => []
         ];
@@ -54,8 +55,9 @@ class LoginController extends Controller
 
         if ($result) {
             return response([
-                'user' => $user,
+                'success' => true,
                 'message' => ['Kullanıcı Kaydı Başarılı.'],
+                'user' => $user,
                 'token' => $token,
                 'errors' => []
             ], 201);

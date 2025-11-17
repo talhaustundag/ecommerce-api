@@ -122,14 +122,14 @@ class CartController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, Cart $cart)
+    public function update(Request $request)
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1'
         ]);
 
-        // Kullanıcının sepeti var mı?
+        // Kullanıcının sepeti var mı kontrolü
         $cart = Cart::where('user_id', auth()->id())->first();
 
         if (!$cart) {
@@ -141,9 +141,10 @@ class CartController extends Controller
             ], 404);
         }
 
-        // Bu ürüne ait cartItem var mı?
+        // Ürün sepette var mı kontrolü
         $cartItem = CartItem::where('cart_id', $cart->id)
             ->where('product_id', $request->product_id)
+            ->with('product') // product bilgisi için
             ->first();
 
         if (!$cartItem) {
@@ -155,16 +156,27 @@ class CartController extends Controller
             ], 404);
         }
 
-        // Miktarı güncelle
+        // Stok kontrolü
+        if ($cartItem->product->stock < $request->quantity) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Yeterli stok yok.',
+                'data' => null,
+                'errors' => []
+            ], 400);
+        }
+
+        // Miktarı güncelleme
         $cartItem->quantity = $request->quantity;
         $cartItem->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Ürün miktarı güncellendi.',
-            'data' => $cartItem,
+            'data' => $cartItem->load('product'),
             'errors' => []
         ], 200);
     }
+
 
 }

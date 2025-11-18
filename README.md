@@ -1,66 +1,317 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+🛒 Ecommerce API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Laravel + PostgreSQL ile geliştirilmiş RESTful E-Ticaret API Projesi
 
-## About Laravel
+📌 Proje Özeti
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Bu proje, kullanıcı yönetimi, ürün-kategori yönetimi, sepet ve sipariş mekanizmalarını içeren tam işlevsel bir E-Ticaret API’sidir.
+API tamamen RESTful, JSON Response, Sanctum Authentication, Validation, Swagger/OpenAPI Dokümantasyonu, Stock Kontrol, Sipariş Email Bildirimleri gibi özellikler içerir.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+🚀 Kurulum Adımları
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1️⃣ Depoyu Klonlayın
 
-## Learning Laravel
+git clone https://github.com/talhaustundag/ecommerce-api.git
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+cd ecommerce-api
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2️⃣ Environment Ayarları
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+cp .env.example .env
 
-## Laravel Sponsors
+.env dosyasında PostgreSQL bağlantısını yapılandır:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=ecommerce_api
+DB_USERNAME=postgres
+DB_PASSWORD=123456
 
-### Premium Partners
+Mail gönderimi için gerekli environment ayarları:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+MAIL_MAILER=log
+MAIL_FROM_ADDRESS=no-reply@ecommerce.local
+MAIL_FROM_NAME="Ecommerce API"
 
-## Contributing
+Not: Geliştirme ortamında mail içerikleri storage/logs/laravel.log üzerinden görüntülenir.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3️⃣ Bağımlılıkları Kurun
 
-## Code of Conduct
+composer install
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4️⃣ Uygulama Key Oluşturun
 
-## Security Vulnerabilities
+php artisan key:generate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5️⃣ SQL Dump
 
-## License
+Sample Data
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Proje klasöründe bulunan `database.sql` dosyası aşağıdaki örnek verileri içerir:
+
+• Admin kullanıcı  
+• Normal kullanıcı  
+• Minimum 5 kategori  
+• Her kategoride minimum 5 ürün  
+
+Bu nedenle migrate/seed çalıştırmanıza gerek yoktur.
+Tek yapmanız gereken SQL dump dosyasını PostgreSQL’e import etmektir.
+
+Opsiyonel: Eğer veri olmadan temiz kurulum yapmak isterseniz:
+
+'php artisan migrate'
+
+6️⃣ Uygulamayı Başlatın
+
+php artisan serve
+
+🗄 PostgreSQL Başlatma (Elle)
+
+Eğer PostgreSQL'i manuel başlatıyorsan:
+
+cd C:\PostgreSQL\18\bin
+
+pg_ctl -D "C:\PostgreSQL\18\data" start
+
+📘 API Documentation (Swagger)
+
+Swagger UI otomatik oluşturulmuştur:
+
+👉 http://localhost:8000/api/documentation
+
+🔐 Authentication
+
+API, Laravel Sanctum ile korunmaktadır.
+
+Login sonrası response içinde gelen:
+
+"token": "1|xasdlkasd123123..."
+
+
+header’a eklenmelidir:
+
+Authorization: Bearer <token>
+
+📚 API Endpoint Listesi
+
+👤 Kullanıcı Yönetimi
+
+Method	Endpoint	Açıklama
+
+POST	/api/register	Yeni kullanıcı oluştur
+
+POST	/api/login	Giriş yap
+
+GET	/api/profile	Profil görüntüle
+
+PUT	/api/profile	Profil güncelle
+
+📂 Kategori Yönetimi
+
+Method	Endpoint	Açıklama
+
+GET	/api/categories	Tüm kategorileri listele
+
+POST /api/categories	Yeni kategori oluştur (Admin)
+
+PUT	/api/categories/{id}	Kategori güncelle (Admin)
+
+DELETE	/api/categories/{id}	Kategori sil (Admin)
+
+🛍 Ürün Yönetimi
+
+Method	Endpoint	Açıklama
+
+GET	/api/products	Ürünleri listele (filtreleme + sayfalama)
+
+GET	/api/products/{id}	Ürün detayı
+
+POST	/api/products	Ürün oluştur (Admin)
+
+PUT	/api/products/{id}	Ürün güncelle (Admin)
+
+DELETE	/api/products/{id}	Ürün sil (Admin)
+
+🛒 Sepet Yönetimi
+
+Method	Endpoint	Açıklama
+
+GET	/api/cart	Sepeti Görüntüle
+
+POST /api/cart/add	Sepete ürün ekle
+
+PUT	/api/cart/update	Ürün miktarı güncelle
+
+DELETE	/api/cart/remove/{product_id}	Sepetten ürün çıkar
+
+DELETE	/api/cart/clear	Sepeti temizle
+
+📦 Sipariş Yönetimi
+
+Method	Endpoint	Açıklama
+
+POST /api/orders	Sipariş oluştur
+
+GET	/api/orders	Siparişleri listele
+
+GET	/api/orders/{id}	Sipariş detayı
+
+PUT	/api/orders/{id}/status	Sipariş durumu güncelle (Admin)
+
+🔍 Filtreleme ve Sayfalama (Products)
+
+/api/products endpoint'i aşağıdaki query parametrelerini destekler:
+
+Parametre	Açıklama
+
+page	Sayfa numarası
+
+search	Ürün isminde arama
+
+category_id	Kategori filtresi
+
+min_price / max_price	Fiyat aralığı
+
+brand	Marka filtresi
+
+sort_by	price_asc / price_desc / newest
+
+Örnek:
+
+/api/products?search=iphone&min_price=20000&sort_by=price_desc
+
+🎯 Örnek Response Formatı
+
+Tüm endpointler standart JSON formatı döner:
+
+{
+  "success": true,
+  "message": "İşlem başarılı",
+  "data": {},
+  "errors": []
+}
+
+🧪 Postman Collection
+
+Projenin test koleksiyonu ekli dosya olarak verilmiştir:
+
+Ecommerce-Api.postman_collection.json
+
+🧰 Kullanılan Teknolojiler
+
+PHP 8+
+
+Laravel 10.x
+
+PostgreSQL
+
+Laravel Sanctum
+
+Swagger (L5-Swagger)
+
+Mail (Sipariş onayı)
+
+Eloquent ORM
+
+👤 Test Kullanıcıları
+
+Admin Kullanıcı
+
+email: admin@test.com
+
+password: admin123
+
+Normal Kullanıcı
+
+email: user@test.com
+
+password: user.123
+
+Not: Test Kullanıcısı Şifresi
+
+Case dökümanında normal kullanıcı için şu bilgiler istenmişti:
+
+email: user@test.com
+
+password: user123
+
+Ancak proje gereksinimlerinde şifre validation kuralı minimum 8 karakter olarak belirtilmişti:
+Password: Zorunlu, minimum 8 karakter
+
+Bu nedenle user123 (7 karakter) geçersiz olduğu için, validation kurallarına uygun olacak şekilde user.123 olarak güncellendi.
+
+
+✔ Bonus Özellikler
+
+Bu projede aşağıdaki bonuslar uygulanmıştır:
+
+✔ Teknik Bonuslar
+
+• Database Migration Sistemi
+
+Laravel migration yapısı kullanılarak tüm tablo yapıları otomatik oluşturulabilir yapıdadır.
+
+• Logging Sistemi
+
+Tüm kritik işlemler Laravel’in storage/logs/laravel.log dosyasına kaydedilir (örn: sipariş oluşturma, hata yakalama).
+
+• API Documentation (Swagger/OpenAPI)
+
+Tüm endpoint’ler OpenAPI standartlarına uygun olarak dökümante edilmiştir.
+
+Dokümantasyon: http://localhost:8000/api/documentation
+
+• Unit Test Altyapısı Hazır (Kısmen)
+
+Test yapısı kurulmuş olup, bazı migration değişiklikleri nedeniyle otomatik test çalıştırmada hata alınmıştır.
+
+✔ Fonksiyonel Bonuslar
+
+• Ürün Stok Takibi
+
+Sipariş oluşturma sırasında her ürün için stok kontrolü yapılır. Yetersiz stok varsa işlem iptal edilir.
+
+• Email Bildirimi (Sipariş Onayı)
+
+Sipariş oluşturulduğunda kullanıcıya sipariş onay maili gönderilir.
+
+(Geliştirme ortamında mail içerikleri storage/logs/laravel.log üzerinden görüntülenebilir.)
+
+• Gelişmiş Ürün Arama ve Filtreleme
+
+Ürün listesinde:
+
+search
+
+category_id
+
+brand
+
+min_price, max_price
+
+sort_by (price_asc, price_desc, newest)
+
+gibi filtreler desteklenir.
+
+• Admin Dashboard Endpoint’leri
+
+Toplam kullanıcı, sipariş, gelir, en çok satan ürünler gibi istatistikler sunulur.
+
+• Sipariş Durumu Güncelleme
+
+Admin kullanıcı sipariş durumlarını (beklemede, hazırlanıyor, kargolandı, teslim edildi, iptal) güncelleyebilir.
+
+📦 SQL Dump
+
+Proje teslim klasöründe:
+
+database_dump.sql
+
+olarak verilmelidir.
+
+📩 İletişim
+
+talhaustundag51@gmail.com
+
+Herhangi bir soruda yardımcı olmaktan memnuniyet duyarım.

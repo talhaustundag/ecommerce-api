@@ -48,7 +48,7 @@ php artisan key:generate
 
 Sample Data
 
-Proje klasöründe bulunan `database.sql` dosyası aşağıdaki örnek verileri içerir:
+Proje klasöründe bulunan `ecommerce_api_dump.sql` dosyası aşağıdaki örnek verileri içerir:
 
 • Admin kullanıcı  
 • Normal kullanıcı  
@@ -311,7 +311,7 @@ Admin kullanıcı sipariş durumlarını (beklemede, hazırlanıyor, kargolandı
 
 Proje teslim klasöründe:
 
-database_dump.sql
+ecommerce_api_dump.sql
 
 olarak verilmelidir.
 
